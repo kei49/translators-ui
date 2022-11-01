@@ -24,3 +24,4 @@ yarn-error.log*
 
 models/*
 .python-version
+**/__pycache__/*
