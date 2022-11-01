@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 import LanguageSelector from '../components/LanguageSelector';
 import InputTextarea from '../components/InputTextarea';
 import { translate } from '../apis/translate';
+import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 function MainPage() {
     const [fromLanguage, setFromLanguage] = useState<string>("ko");
@@ -20,15 +22,19 @@ function MainPage() {
     const availableTolanguages = availableLanguages;
 
 
-    const callTranslate = (texts: string) => {
+    const callTranslate = useCallback((texts: string) => {
         (async () => {
-            setInputTexts(texts);
-
             const results = await translate(texts, fromLanguage, toLanguage);
             console.log("results: ", results);
             setOutputTexts(results);
         })()
-    }
+    }, [fromLanguage, toLanguage])
+
+    useEffect(() => {
+        if (fromLanguage !== toLanguage && inputTexts !== "") {
+            callTranslate(inputTexts);
+        }
+    }, [fromLanguage, toLanguage, inputTexts, callTranslate])
 
     const switchLanguages = () => {
         if ((availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage))) {
@@ -40,16 +46,27 @@ function MainPage() {
         }
     }
 
+    const handleOneLanugageUpdate = (la: string, isFrom: boolean) => {
+        console.log("@@@@ calling udpates", la, isFrom);
+        if (isFrom) {
+            setFromLanguage(la);
+        } else {
+            setToLanguage(la);
+        }
+        
+        setOutputTexts("");
+    }
+
     return (
         <Box pt="20px" margin="auto" minHeight="1000px" bgColor="#282c34">
             <HStack spacing='10px' justifyContent="center">
                 <VStack spacing={0}>
-                    <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => setFromLanguage(la)} />
-                    <InputTextarea texts={inputTexts} handleUpdate={(texts) => callTranslate(texts)} />
+                    <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, true)} />
+                    <InputTextarea texts={inputTexts} handleUpdate={(texts) => setInputTexts(texts)} />
                 </VStack>
                 <Icon as={TbSwitchHorizontal} w={8} h={8} color="white" onClick={switchLanguages} />
                 <VStack spacing={0}>
-                    <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => setToLanguage(la)} />
+                    <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, false)} />
                     <Textarea value={outputTexts} readOnly h="200px" placeholder='Translated texts will be displayed here' color="white" />
                 </VStack>
             </HStack>

@@ -11,14 +11,14 @@ interface ILanguageSelector {
 }
 
 interface FormikInput {
-    language: string[];
+    language: string;
 }
 
 function LanguageSelector({ languages, value, handleUpdate }: ILanguageSelector) {
     const AutoSubmit = () => {
         const { values, submitForm }: FormikContextType<FormikInput> = useFormikContext();
         React.useEffect(() => {
-            if (values.language) {
+            if (values.language !== value) {
                 submitForm();
             }
         }, [values, submitForm]);
