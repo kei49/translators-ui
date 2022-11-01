@@ -22,4 +22,4 @@ class OpusMtKoEn():
         generated_ids = self.model.generate(**batch)
         outputs = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
         
-        print(outputs)
+        return outputs

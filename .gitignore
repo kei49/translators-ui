@@ -25,3 +25,4 @@ yarn-error.log*
 models/*
 .python-version
 **/__pycache__/*
+hft-logs.log

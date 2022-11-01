@@ -14,6 +14,16 @@ function Main() {
     const availableFromLanguages = ["ko"];
     const availableTolanguages = ["en"];
 
+    const url = "http://localhost:8081/translate"
+
+    const getOptions = (body: Record<string, string>) => ({
+        headers: {
+        "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(body)
+    });
+
     useEffect(() => {
         console.log("@@@ fromLanguage", fromLanguage);
     }, [fromLanguage])
@@ -23,7 +33,18 @@ function Main() {
     }, [toLanguage])
 
     const translateKoToEn = (texts: string) => {
-        setOutputTexts(texts);
+        (async () => {
+            const res = await fetch(url, getOptions({
+                "texts": texts,
+                "from_la": "ko",
+                "to_la": "en"
+            }))
+
+            const data = await res.json();
+
+            console.log("data: ", data);
+            setOutputTexts(data);
+        })()
     }
 
     return (
