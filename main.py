@@ -38,6 +38,8 @@ def health_check():
 
 @app.post("/translate/")
 def translate(t_conf: TranslateConfig):
+    print(f"{os.getpid()} worker is handling the request")
+    
     if t_conf.from_la != "ko" or t_conf.to_la != "en":
         return None
     
