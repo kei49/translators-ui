@@ -1,10 +1,11 @@
-import React from 'react';
-// import { useFormik } from 'formik';
-import { Field, Form, Formik, FormikProps, useFormikContext, FormikContextType } from 'formik';
+import React, { useEffect } from 'react';
+import { Field, useFormikContext, FormikContextType, useFormik, FormikProvider } from 'formik';
+// import { Field, useFormik, FormikProvider } from 'formik';
 import { Box, Textarea } from '@chakra-ui/react'
 
 
 interface IInputTextarea {
+    texts: string;
     handleUpdate: (texts: string) => void;
 }
 
@@ -14,36 +15,45 @@ interface FormikInput {
 
 let tid: NodeJS.Timeout | null = null;
 
-function InputTextarea({ handleUpdate }: IInputTextarea) {
+function InputTextarea({ texts, handleUpdate }: IInputTextarea) {
+    const formik = useFormik({
+        initialValues: { texts },
+        onSubmit: (values) => {
+            handleUpdate(values.texts);
+        }
+    })
+ 
     const AutoSubmit = () => {
-        const { values, submitForm }: FormikContextType<FormikInput> = useFormikContext();
-        React.useEffect(() => {
-            if (values.texts) {
+        const { values }: FormikContextType<FormikInput> = useFormikContext();
+        
+        useEffect(() => {
+            if (values && values.texts !== "" && values.texts !== texts) {
                 if (tid !== null) clearTimeout(tid);
 
                 tid = setTimeout(() => {
-                    submitForm();
+                    if (values) {
+                        formik.submitForm()
+                        if (tid !== null) clearTimeout(tid);
+                    }
                 }, 1000);
             }
-        }, [values, submitForm]);
+        }, [values]);
         return <></>;
     }
 
+    useEffect(() => {
+        formik.setFieldValue('texts', texts);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [texts])
+
     return (
         <Box width='xl'>
-            <Formik
-                initialValues={{ texts: "" }}
-                onSubmit={(values, actions) => {
-                    handleUpdate(values.texts);
-                }}
-                >
-                {(props: FormikProps<any>) => (
-                    <Form>
-                        <Field h="200px" as={Textarea} placeholder='Enter texts to translate from' name="texts" color="white" />
-                        <AutoSubmit />
-                    </Form>
-                )}
-            </Formik>
+            <form onSubmit={formik.handleSubmit}>
+                <FormikProvider value={formik}>
+                    <Field h="200px" as={Textarea} placeholder='Enter texts to translate from' name="texts" color="white" />
+                    <AutoSubmit />
+                </FormikProvider>
+            </form>
         </Box>
             
     )

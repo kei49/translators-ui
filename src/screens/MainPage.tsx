@@ -12,6 +12,7 @@ import { translate } from '../apis/translate';
 function MainPage() {
     const [fromLanguage, setFromLanguage] = useState<string>("ko");
     const [toLanguage, setToLanguage] = useState<string>("en");
+    const [inputTexts, setInputTexts] = useState<string>("");
     const [outputTexts, setOutputTexts] = useState<string>("");
 
     const availableFromLanguages = ["ko"];
@@ -20,16 +21,19 @@ function MainPage() {
 
     const callTranslate = (texts: string) => {
         (async () => {
-            const data = await translate(texts, fromLanguage, toLanguage);
-            console.log("data: ", data);
-            setOutputTexts(data);
+            setInputTexts(texts);
+
+            const results = await translate(texts, fromLanguage, toLanguage);
+            console.log("results: ", results);
+            setOutputTexts(results);
         })()
     }
 
     const switchLanguages = () => {
-        if (availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage)) {
+        if ((availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage))) {
             setFromLanguage(toLanguage);
             setToLanguage(fromLanguage);
+            setInputTexts(outputTexts);
         } else {
             toast.warning("Sorry, the pair of the selected languages are not available");
         }
@@ -40,7 +44,7 @@ function MainPage() {
             <HStack spacing='10px' justifyContent="center">
                 <VStack spacing={0}>
                     <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => setFromLanguage(la)} />
-                    <InputTextarea handleUpdate={(texts) => callTranslate(texts)} />
+                    <InputTextarea texts={inputTexts} handleUpdate={(texts) => callTranslate(texts)} />
                 </VStack>
                 <Icon as={TbSwitchHorizontal} w={8} h={8} color="white" onClick={switchLanguages} />
                 <VStack spacing={0}>
