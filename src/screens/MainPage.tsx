@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Textarea, Icon } from '@chakra-ui/react'
 import { Box, HStack, VStack } from '@chakra-ui/react'
 
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 
 import LanguageSelector from '../components/LanguageSelector';
 import InputTextarea from '../components/InputTextarea';
+import { translate } from '../apis/translate';
 
 function MainPage() {
     const [fromLanguage, setFromLanguage] = useState<string>("ko");
@@ -16,34 +17,10 @@ function MainPage() {
     const availableFromLanguages = ["ko"];
     const availableTolanguages = ["en"];
 
-    const url = "http://localhost:8081/translate"
 
-    const getOptions = (body: Record<string, string>) => ({
-        headers: {
-        "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(body)
-    });
-
-    useEffect(() => {
-        console.log("@@@ fromLanguage", fromLanguage);
-    }, [fromLanguage])
-
-    useEffect(() => {
-        console.log("@@@ toLanguage", toLanguage);
-    }, [toLanguage])
-
-    const translateKoToEn = (texts: string) => {
+    const callTranslate = (texts: string) => {
         (async () => {
-            const res = await fetch(url, getOptions({
-                "texts": texts,
-                "from_la": "ko",
-                "to_la": "en"
-            }))
-
-            const data = await res.json();
-
+            const data = await translate(texts, fromLanguage, toLanguage);
             console.log("data: ", data);
             setOutputTexts(data);
         })()
@@ -63,7 +40,7 @@ function MainPage() {
             <HStack spacing='10px' justifyContent="center">
                 <VStack spacing={0}>
                     <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => setFromLanguage(la)} />
-                    <InputTextarea handleUpdate={(texts) => translateKoToEn(texts)} />
+                    <InputTextarea handleUpdate={(texts) => callTranslate(texts)} />
                 </VStack>
                 <Icon as={TbSwitchHorizontal} w={8} h={8} color="white" onClick={switchLanguages} />
                 <VStack spacing={0}>
