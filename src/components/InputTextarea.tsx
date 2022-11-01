@@ -1,25 +1,29 @@
 import React from 'react';
 // import { useFormik } from 'formik';
 import { Field, Form, Formik, FormikProps, useFormikContext, FormikContextType } from 'formik';
-import { Box, Select } from '@chakra-ui/react'
+import { Box, Textarea } from '@chakra-ui/react'
 
 
-interface ILanguageSelector {
-    languages: string[];
-    value: string;
-    handleUpdate: (language: string) => void;
+interface IInputTextarea {
+    handleUpdate: (texts: string) => void;
 }
 
 interface FormikInput {
-    language: string[];
+    texts: string;
 }
 
-function LanguageSelector({ languages, value, handleUpdate }: ILanguageSelector) {
+let tid: NodeJS.Timeout | null = null;
+
+function InputTextarea({ handleUpdate }: IInputTextarea) {
     const AutoSubmit = () => {
         const { values, submitForm }: FormikContextType<FormikInput> = useFormikContext();
         React.useEffect(() => {
-            if (values.language) {
-                submitForm();
+            if (values.texts) {
+                if (tid !== null) clearTimeout(tid);
+
+                tid = setTimeout(() => {
+                    submitForm();
+                }, 1000);
             }
         }, [values, submitForm]);
         return <></>;
@@ -28,18 +32,14 @@ function LanguageSelector({ languages, value, handleUpdate }: ILanguageSelector)
     return (
         <Box width='xl'>
             <Formik
-                initialValues={{ language: value }}
+                initialValues={{ texts: "" }}
                 onSubmit={(values, actions) => {
-                    handleUpdate(values.language);
+                    handleUpdate(values.texts);
                 }}
                 >
                 {(props: FormikProps<any>) => (
                     <Form>
-                        <Field as={Select} placeholder='Select language' name="language" color="white">
-                            {languages.map(la => (
-                                <option key={la} value={la} color="white">{la}</option>
-                            ))}
-                        </Field>
+                        <Field h="200px" as={Textarea} placeholder='Enter texts to translate from' name="texts" color="white" />
                         <AutoSubmit />
                     </Form>
                 )}
@@ -49,4 +49,4 @@ function LanguageSelector({ languages, value, handleUpdate }: ILanguageSelector)
     )
 }
 
-export default LanguageSelector;
+export default InputTextarea;

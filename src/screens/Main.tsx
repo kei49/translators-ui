@@ -4,27 +4,38 @@ import { Textarea } from '@chakra-ui/react'
 import { Box, HStack, VStack } from '@chakra-ui/react'
 
 import LanguageSelector from '../components/LanguageSelector';
+import InputTextarea from '../components/InputTextarea';
 
 function Main() {
-    const [fromLanguage, setFromLanguage] = useState<string>("en");
-    const [toLanguage, setToLanguage] = useState<string>("ja");
+    const [fromLanguage, setFromLanguage] = useState<string>("ko");
+    const [toLanguage, setToLanguage] = useState<string>("en");
+    const [outputTexts, setOutputTexts] = useState<string>("");
 
-    const languagesList = ["ko", "ja", "en"];
+    const availableFromLanguages = ["ko"];
+    const availableTolanguages = ["en"];
 
     useEffect(() => {
         console.log("@@@ fromLanguage", fromLanguage);
     }, [fromLanguage])
 
+    useEffect(() => {
+        console.log("@@@ toLanguage", toLanguage);
+    }, [toLanguage])
+
+    const translateKoToEn = (texts: string) => {
+        setOutputTexts(texts);
+    }
+
     return (
         <Box pt="20px" margin="auto" minHeight="1000px" bgColor="#282c34">
             <HStack spacing='10px' justifyContent="center">
                 <VStack spacing={0}>
-                    <LanguageSelector languages={languagesList} value={fromLanguage} handleUpdate={(la) => setFromLanguage(la)} />
-                    <Textarea h="200px" placeholder='Enter texts to translate from' color="white" />
+                    <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => setFromLanguage(la)} />
+                    <InputTextarea handleUpdate={(texts) => translateKoToEn(texts)} />
                 </VStack>
                 <VStack spacing={0}>
-                    <LanguageSelector languages={languagesList} value={toLanguage} handleUpdate={(la) => setToLanguage(la)} />
-                    <Textarea h="200px" placeholder='Translated texts will be displayed here' color="white" />
+                    <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => setToLanguage(la)} />
+                    <Textarea defaultValue="" value={outputTexts} h="200px" placeholder='Translated texts will be displayed here' color="white" />
                 </VStack>
             </HStack>
         </Box>
