@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "huggingface-translations"
+version = "0.1.0"
+description = ""
+authors = ["Kei Shimizu <suns.manage.k@gmail.com>"]
+readme = "README.md"
+packages = [{include = "huggingface_translations"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+transformers = "^4.23.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
