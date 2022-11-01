@@ -11,6 +11,8 @@ const getPostOptions = (body: Record<string, string>) => ({
 export async function translate(texts: string, fromLanguage: string, toLanguage: string) {
     const url = `${serverHost}/translate`;
 
+    console.log(`@@@ requesting API: from ${fromLanguage} to ${toLanguage} for ${texts}`);
+
     const res = await fetch(url, getPostOptions({
         "texts": texts,
         "from_la": fromLanguage,

@@ -15,8 +15,9 @@ function MainPage() {
     const [inputTexts, setInputTexts] = useState<string>("");
     const [outputTexts, setOutputTexts] = useState<string>("");
 
-    const availableFromLanguages = ["ko"];
-    const availableTolanguages = ["en"];
+    const availableLanguages = ["en", "es", "fr", "it", "ja", "ko", "ru", "vi", "zh", "id", "pl", "th"]
+    const availableFromLanguages = availableLanguages;
+    const availableTolanguages = availableLanguages;
 
 
     const callTranslate = (texts: string) => {

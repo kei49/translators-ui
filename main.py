@@ -3,10 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# from scripts.models.t5_small import T5Model
-# from scripts.models.opus_mt_tc_big_en_ko import OpusMtTcBigEnKo
-# from scripts.models.mbert_large_cc25 import MbertLargeCC25
-from python.models.opus_mt_ko_en import OpusMtKoEn
+from python.translators import Translators
 
 
 app = FastAPI()
@@ -40,23 +37,17 @@ def health_check():
 def translate(t_conf: TranslateConfig):
     print(f"{os.getpid()} worker is handling the request")
 
-    if t_conf.from_la != "ko" or t_conf.to_la != "en":
-        return None
-
-    print("loading model")
-    model = OpusMtKoEn()
-    print("start to inference from: ", t_conf.texts)
-    outputs = model.inference(t_conf.texts)
-    print("get outputs: ", outputs)
+    translator = Translators(t_conf.from_la, t_conf.to_la)
+    outputs = translator.inference(t_conf.texts)
     return outputs
 
 
 def run_only_once() -> None:
     print("run_only_once: this runs only once when starting the app even with multiple workers of gunicron")
 
-    model = OpusMtKoEn()
-    outputs = model.inference("오늘 한국어 가르쳐 주시겠어요?")
-    print(outputs)
+    translator = Translators("ko", "en")
+    translator.inference(
+        "run_only_once: gunicron의 여러 작업자가 있어도 앱을 시작할 때 한 번만 실행됩니다.")
 
 
 run_only_once()
