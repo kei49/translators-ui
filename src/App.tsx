@@ -1,4 +1,6 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 import MainPage from './screens/MainPage';
@@ -11,6 +13,7 @@ function App() {
         HuggingFace Translators
       </header>
       <MainPage />
+      <ToastContainer />
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-// import { Grid, GridItem } from '@chakra-ui/react'
-import { Textarea } from '@chakra-ui/react'
+import { Textarea, Icon } from '@chakra-ui/react'
 import { Box, HStack, VStack } from '@chakra-ui/react'
+
+import { TbSwitchHorizontal } from "react-icons/tb";
+import { toast } from 'react-toastify';
 
 import LanguageSelector from '../components/LanguageSelector';
 import InputTextarea from '../components/InputTextarea';
@@ -47,6 +49,15 @@ function MainPage() {
         })()
     }
 
+    const switchLanguages = () => {
+        if (availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage)) {
+            setFromLanguage(toLanguage);
+            setToLanguage(fromLanguage);
+        } else {
+            toast.warning("Sorry, the pair of the selected languages are not available");
+        }
+    }
+
     return (
         <Box pt="20px" margin="auto" minHeight="1000px" bgColor="#282c34">
             <HStack spacing='10px' justifyContent="center">
@@ -54,6 +65,7 @@ function MainPage() {
                     <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => setFromLanguage(la)} />
                     <InputTextarea handleUpdate={(texts) => translateKoToEn(texts)} />
                 </VStack>
+                <Icon as={TbSwitchHorizontal} w={8} h={8} color="white" onClick={switchLanguages} />
                 <VStack spacing={0}>
                     <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => setToLanguage(la)} />
                     <Textarea value={outputTexts} readOnly h="200px" placeholder='Translated texts will be displayed here' color="white" />
