@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-import Main from './screens/MainPage';
+import MainPage from './screens/MainPage';
 import './App.css';
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
       <header className="App-header">
         HuggingFace Translators
       </header>
-      <Main />
+      <MainPage />
     </div>
   );
 }

@@ -56,7 +56,7 @@ function MainPage() {
                 </VStack>
                 <VStack spacing={0}>
                     <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => setToLanguage(la)} />
-                    <Textarea defaultValue="" value={outputTexts} h="200px" placeholder='Translated texts will be displayed here' color="white" />
+                    <Textarea value={outputTexts} readOnly h="200px" placeholder='Translated texts will be displayed here' color="white" />
                 </VStack>
             </HStack>
         </Box>
