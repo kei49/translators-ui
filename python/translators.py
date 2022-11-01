@@ -1,5 +1,5 @@
 from python.models.opus_mt_ko_en import OpusMtKoEn
-from python.models.mbert_large_50 import MBartLargeEach
+from python.models.mbert_large_50 import MBartLargeManyToMany
 # from python.models.mbert_large_cc25 import MbertLargeCC25
 
 
@@ -13,7 +13,8 @@ class Translators():
             self.model = OpusMtKoEn()
         elif from_la in self.supported_la and to_la in self.supported_la:
             # self.model = MbertLargeCC25(to_la)
-            self.model = MBartLargeEach(from_la, to_la)
+            self.model = MBartLargeManyToMany(from_la, to_la)
+            print("loaded MBartLargeManyToMany", self.model)
         else:
             raise Exception("failed to load models: please check languages")
 
