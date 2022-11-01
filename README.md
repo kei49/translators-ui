@@ -4,7 +4,7 @@
 
 ```
 pyenv local 3.10.6
-poetry run pip3 install torch torchvision torchaudio
+poetry run pip3 install torch torchvision torchaudio sentencepiece
 poetry update
 source .venv/bin/activate
 ```

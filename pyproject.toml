@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "huggingface-translations"
+name = "huggingface-translators"
 version = "0.1.0"
 description = ""
 authors = ["Kei Shimizu <suns.manage.k@gmail.com>"]

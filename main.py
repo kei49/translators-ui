@@ -6,7 +6,7 @@ from pydantic import BaseModel
 # from scripts.models.t5_small import T5Model
 # from scripts.models.opus_mt_tc_big_en_ko import OpusMtTcBigEnKo
 # from scripts.models.mbert_large_cc25 import MbertLargeCC25
-from scripts.models.opus_mt_ko_en import OpusMtKoEn
+from python.models.opus_mt_ko_en import OpusMtKoEn
 
 
 app = FastAPI()
@@ -39,10 +39,10 @@ def health_check():
 @app.post("/translate/")
 def translate(t_conf: TranslateConfig):
     print(f"{os.getpid()} worker is handling the request")
-    
+
     if t_conf.from_la != "ko" or t_conf.to_la != "en":
         return None
-    
+
     print("loading model")
     model = OpusMtKoEn()
     print("start to inference from: ", t_conf.texts)
@@ -53,9 +53,10 @@ def translate(t_conf: TranslateConfig):
 
 def run_only_once() -> None:
     print("run_only_once: this runs only once when starting the app even with multiple workers of gunicron")
-    
+
     model = OpusMtKoEn()
     outputs = model.inference("오늘 한국어 가르쳐 주시겠어요?")
     print(outputs)
-    
+
+
 run_only_once()
