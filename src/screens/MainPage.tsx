@@ -6,7 +6,7 @@ import { Box, HStack, VStack } from '@chakra-ui/react'
 import LanguageSelector from '../components/LanguageSelector';
 import InputTextarea from '../components/InputTextarea';
 
-function Main() {
+function MainPage() {
     const [fromLanguage, setFromLanguage] = useState<string>("ko");
     const [toLanguage, setToLanguage] = useState<string>("en");
     const [outputTexts, setOutputTexts] = useState<string>("");
@@ -63,4 +63,4 @@ function Main() {
     )
 }
 
-export default Main;
+export default MainPage;
