@@ -11,8 +11,9 @@ from python.translators import Translators, ModelType
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
-    "https://*.jp.ngrok.io"
+    "*"
+    # "http://localhost:3000",
+    # "https://*.jp.ngrok.io"
 ]
 
 app.add_middleware(

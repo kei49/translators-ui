@@ -1,1 +1,1 @@
-export const serverHost = "http://localhost:8081"
+export const serverHost = process.env.REACT_APP_SERVER_HOST;
