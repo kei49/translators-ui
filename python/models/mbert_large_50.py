@@ -21,18 +21,32 @@ class MBartLargeManyToMany():
     supported_locales = ["en_XX", "es_XX", "fr_XX", "it_IT", "ja_XX",
                          "ko_KR", "ru_RU", "vi_VN", "zh_CN", "id_ID", "pl_PL", "th_TH"]
 
-    def __init__(self) -> None:
+    def __init__(self, use_gpu: bool = False) -> None:
         name = NAME
         directory = get_directory(name)
         self.pretrined_name = f"facebook/{name}"
+        self.use_gpu = use_gpu
+        
+        if use_gpu:
+            print(f"using gpu for {NAME}")
 
         if not check_path_exists(directory):
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(
+            if use_gpu:
+                self.model = MBartForConditionalGeneration.from_pretrained(
                 self.pretrined_name)
+            else:
+                self.model = AutoModelForSeq2SeqLM.from_pretrained(
+                    self.pretrined_name)
+                
             self.model.save_pretrained(directory)
         else:
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(
-                directory)
+            if use_gpu:
+                self.model = MBartForConditionalGeneration.from_pretrained(
+                    directory)
+            else:
+                self.model = AutoModelForSeq2SeqLM.from_pretrained(
+                    directory)
+                
 
     def set_languages(self, from_la: str, to_la: str) -> None:
         use_locales = []
@@ -46,18 +60,23 @@ class MBartLargeManyToMany():
 
         [src_lang, tgt_lang] = use_locales
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
+        if self.use_gpu:
+            self.tokenizer = MBart50TokenizerFast.from_pretrained(
             self.pretrined_name)
+        else:
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                self.pretrined_name)
 
         print(f"translate from {src_lang} to {tgt_lang}")
         self.tokenizer.src_lang = src_lang
         self.tgt_lang = tgt_lang
 
-    def inference(self, inputs: str = None):
+    def inference(self, inputs: str = None, max_new_tokens: int = 500):
         encoded = self.tokenizer(inputs, return_tensors="pt")
         generated_tokens = self.model.generate(
             **encoded,
-            forced_bos_token_id=self.tokenizer.lang_code_to_id[self.tgt_lang])
+            forced_bos_token_id=self.tokenizer.lang_code_to_id[self.tgt_lang],
+            max_new_tokens=max_new_tokens)
 
         outputs = self.tokenizer.batch_decode(
             generated_tokens, skip_special_tokens=True)[0]

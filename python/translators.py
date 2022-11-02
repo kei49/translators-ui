@@ -3,7 +3,7 @@ from enum import Enum, auto
 from python.models.opus_mt_ko_en import OpusMtKoEn
 from python.models.mbert_large_50 import MBartLargeManyToMany
 # from python.models.mbert_large_cc25 import MbertLargeCC25
-
+import torch
 
 class ModelType(Enum):
     OPUS_MT_KO_EN = auto()
@@ -13,6 +13,8 @@ class ModelType(Enum):
 class Translators():
     supported_la = ["en", "es", "fr", "it", "ja",
                     "ko", "ru", "vi", "zh", "id", "pl", "th"]
+    use_gpu = torch.cuda.is_available()
+    
 
     def __init__(self, model_type: ModelType) -> None:
         self.model_type = model_type
@@ -24,7 +26,7 @@ class Translators():
             case ModelType.OPUS_MT_KO_EN:
                 self.model = OpusMtKoEn()
             case ModelType.MBART_LARGE_MANY_TO_MANY:
-                self.model = MBartLargeManyToMany()
+                self.model = MBartLargeManyToMany(use_gpu=self.use_gpu)
             case _:
                 pass
 
