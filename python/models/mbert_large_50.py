@@ -21,7 +21,20 @@ class MBartLargeManyToMany():
     supported_locales = ["en_XX", "es_XX", "fr_XX", "it_IT", "ja_XX",
                          "ko_KR", "ru_RU", "vi_VN", "zh_CN", "id_ID", "pl_PL", "th_TH"]
 
-    def __init__(self, from_la: str, to_la: str) -> None:
+    def __init__(self) -> None:
+        name = NAME
+        directory = get_directory(name)
+        self.pretrined_name = f"facebook/{name}"
+
+        if not check_path_exists(directory):
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(
+                self.pretrined_name)
+            self.model.save_pretrained(directory)
+        else:
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(
+                directory)
+
+    def set_languages(self, from_la: str, to_la: str) -> None:
         use_locales = []
         for la in [from_la, to_la]:
             locales = [
@@ -31,25 +44,14 @@ class MBartLargeManyToMany():
 
             use_locales.append(locales[0])
 
-        name = NAME
-        pretrined_name = f"facebook/{name}"
-        directory = get_directory(name)
-
         [src_lang, tgt_lang] = use_locales
+
         self.tokenizer = AutoTokenizer.from_pretrained(
-            pretrined_name)
+            self.pretrined_name)
 
         print(f"translate from {src_lang} to {tgt_lang}")
         self.tokenizer.src_lang = src_lang
         self.tgt_lang = tgt_lang
-
-        if not check_path_exists(directory):
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(
-                pretrined_name)
-            self.model.save_pretrained(directory)
-        else:
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(
-                directory)
 
     def inference(self, inputs: str = None):
         encoded = self.tokenizer(inputs, return_tensors="pt")
