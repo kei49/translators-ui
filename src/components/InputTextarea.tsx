@@ -47,7 +47,7 @@ function InputTextarea({ texts, handleUpdate }: IInputTextarea) {
     }, [texts])
 
     return (
-        <Box width='xl'>
+        <Box w="100%">
             <form onSubmit={formik.handleSubmit}>
                 <FormikProvider value={formik}>
                     <Field h="200px" as={Textarea} placeholder='Enter texts to translate from' name="texts" color="white" />

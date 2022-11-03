@@ -40,7 +40,7 @@ function LanguageSelector({ languages, value, handleUpdate }: ILanguageSelector)
     }, [value])
 
     return (
-        <Box width='xl'>
+        <Box w="100%">
             
                 <FormikProvider value={formik}>
                 <form onSubmit={formik.handleSubmit}>

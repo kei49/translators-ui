@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Textarea, Icon } from '@chakra-ui/react'
-import { Box, HStack, VStack } from '@chakra-ui/react'
+import { Box, VStack } from '@chakra-ui/react'
 
 import { TbSwitchHorizontal } from "react-icons/tb";
 import { toast } from 'react-toastify';
@@ -52,17 +52,17 @@ function MainPage() {
 
     return (
         <Box pt="20px" margin="auto" minHeight="1000px" bgColor="#282c34">
-            <HStack spacing='10px' justifyContent="center">
-                <VStack spacing={0}>
+            <Box display="flex">
+                <VStack w="100%" ml="50px">
                     <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, true)} />
                     <InputTextarea texts={inputTexts} handleUpdate={(texts) => setInputTexts(texts)} />
                 </VStack>
-                <Icon as={TbSwitchHorizontal} w={8} h={8} color="white" onClick={switchLanguages} />
-                <VStack spacing={0}>
+                <Icon as={TbSwitchHorizontal} pt="8px" w={{ base: "10%", md: "5%",xl: "5%" }} h={8} color="white" onClick={switchLanguages} />
+                <VStack w="100%" mr="50px">
                     <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, false)} />
                     <Textarea value={outputTexts} readOnly h="200px" placeholder='Translated texts will be displayed here' color="white" />
                 </VStack>
-            </HStack>
+            </Box>
         </Box>
     )
 }
