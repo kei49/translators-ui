@@ -32,10 +32,9 @@ class OpusMtMulEn():
             raise InvalidLanguagesError()
 
         src_lang = from_la
-        print(f"translate from {src_lang} to en")
 
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.pretrined_name)
+            pretrained_name)
 
         self.tokenizer.src_lang = src_lang
 

@@ -2,9 +2,8 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import copy
 
-from python.translators import Translators, ModelType
+from python.translator.manager import Manager, ModelType, TranslateParams
 
 
 app = FastAPI()
@@ -24,15 +23,13 @@ app.add_middleware(
 )
 
 
-class TranslateConfig(BaseModel):
+class TranslateRequestParams(BaseModel):
     texts: str
     from_la: str
     to_la: str
 
 
-opus_mt_ko_en_model = Translators(ModelType.OPUS_MT_KO_EN)
-opus_mt_mul_en_model = Translators(ModelType.OPUS_MT_MUL_EN)
-mbart_large_mm_model = Translators(ModelType.MBART_LARGE_MANY_TO_MANY)
+manager = Manager()
 
 
 @app.get("/")
@@ -42,24 +39,25 @@ def health_check():
 
 
 @app.post("/translate/")
-def translate(t_conf: TranslateConfig):
+def translate(req: TranslateRequestParams):
     print(f"{os.getpid()} worker is handling the request")
 
-    if t_conf.from_la == "ko" and t_conf.to_la == "en":
-        translator = copy.deepcopy(opus_mt_ko_en_model)
-    elif t_conf.to_la == "en":
-        translator = copy.deepcopy(opus_mt_mul_en_model)
-        translator.set_languages(t_conf.from_la, t_conf.to_la)
+    if req.from_la == "ko" and req.to_la == "en":
+        t_p = TranslateParams(ModelType.OPUS_MT_KO_EN, req.from_la, req.to_la)
+    elif req.to_la == "en":
+        t_p = TranslateParams(ModelType.OPUS_MT_MUL_EN, req.from_la, req.to_la)
     else:
-        translator = copy.deepcopy(mbart_large_mm_model)
-        translator.set_languages(t_conf.from_la, t_conf.to_la)
+        t_p = TranslateParams(
+            ModelType.MBART_LARGE_MANY_TO_MANY, req.from_la, req.to_la)
 
-    outputs = translator.inference(t_conf.texts)
+    translator = manager.get_model(t_p)
+
+    outputs = translator.inference(req.texts)
     return outputs
 
 
 def run_only_once() -> None:
-    print("run_only_once: this runs only once when starting the app even with multiple workers of gunicron")
+    print("Application is ready now!")
 
 
 run_only_once()
