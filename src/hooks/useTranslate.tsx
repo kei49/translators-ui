@@ -24,25 +24,27 @@ export const useTranslate = ({ params, returnResults }: IUseTranslate) => {
     const nextCallParamsRef = useRef<TranslateStatus>({} as TranslateStatus)
 
     useEffect(() => {
-        nextCallParamsRef.current = ({
-            ...params,
-            done: false
-        })
+        if (!_.isEqual(_.omit(nextCallParamsRef.current, 'done'), params)) {
+            nextCallParamsRef.current = ({
+                ...params,
+                done: false
+            })
+        }        
     }, [params])
 
     const startTranslate = useCallback(async () => {
         const currentParams = { ...nextCallParamsRef.current }
-        const { texts, fromLanguage, toLanguage } = currentParams;
+        const { texts, fromLanguage, toLanguage, done } = currentParams;
 
-        if (!runningRef.current && !currentParams.done && fromLanguage !== toLanguage && texts !== "") {
+        if (!runningRef.current && !done && fromLanguage !== toLanguage && texts !== "") {
             (async () => {
-                console.log(`@@@@ starting to call translate API with ${texts}, ${fromLanguage}, ${toLanguage}`);
+                console.log(`@@@@@ starting to call translate API with ${texts}, ${fromLanguage}, ${toLanguage}, ${done}`);
                 runningRef.current = true;
 
                 const results = await translate(texts, fromLanguage, toLanguage);
-                console.log("@@@@ get results form API: ", results);
+                console.log("get results form API: ", results);
                 returnResults(results);
-
+                
                 if (_.isEqual(currentParams, nextCallParamsRef.current)) {
                     nextCallParamsRef.current.done = true;
                 }

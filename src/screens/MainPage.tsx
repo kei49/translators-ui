@@ -10,8 +10,8 @@ import InputTextarea from '../components/InputTextarea';
 import { useTranslate } from '../hooks/useTranslate';
 
 function MainPage() {
-    const [fromLanguage, setFromLanguage] = useState<string>("ko");
-    const [toLanguage, setToLanguage] = useState<string>("en");
+    const [fromLanguage, setFromLanguage] = useState<string>("en");
+    const [toLanguage, setToLanguage] = useState<string>("ko");
     const [inputTexts, setInputTexts] = useState<string>("");
     const [outputTexts, setOutputTexts] = useState<string>("");
 
