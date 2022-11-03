@@ -35,7 +35,7 @@ function InputTextarea({ texts, handleUpdate }: IInputTextarea) {
                         formik.submitForm()
                         if (tid !== null) clearTimeout(tid);
                     }
-                }, 1000);
+                }, 300);
             }
         }, [values]);
         return <></>;

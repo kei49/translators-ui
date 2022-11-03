@@ -7,9 +7,7 @@ import { toast } from 'react-toastify';
 
 import LanguageSelector from '../components/LanguageSelector';
 import InputTextarea from '../components/InputTextarea';
-import { translate } from '../apis/translate';
-import { useEffect } from 'react';
-import { useCallback } from 'react';
+import { useTranslate } from '../hooks/useTranslate';
 
 function MainPage() {
     const [fromLanguage, setFromLanguage] = useState<string>("ko");
@@ -21,25 +19,19 @@ function MainPage() {
     const availableFromLanguages = availableLanguages;
     const availableTolanguages = availableLanguages;
 
-
-    const callTranslate = useCallback((texts: string) => {
-        (async () => {
-            const results = await translate(texts, fromLanguage, toLanguage);
-            console.log("results: ", results);
-            setOutputTexts(results);
-        })()
-    }, [fromLanguage, toLanguage])
-
-    useEffect(() => {
-        if (fromLanguage !== toLanguage && inputTexts !== "") {
-            callTranslate(inputTexts);
-        }
-    }, [fromLanguage, toLanguage, inputTexts, callTranslate])
+    useTranslate({
+        params: {
+            texts: inputTexts,
+            fromLanguage,
+            toLanguage
+        },
+        returnResults: (texts: string) => setOutputTexts(texts)
+    });
 
     const switchLanguages = () => {
         if ((availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage))) {
             setFromLanguage(toLanguage);
-            setToLanguage(fromLanguage);
+            // setToLanguage(fromLanguage);
             setInputTexts(outputTexts);
         } else {
             toast.warning("Sorry, the pair of the selected languages are not available");
@@ -50,6 +42,7 @@ function MainPage() {
         console.log("@@@@ calling udpates", la, isFrom);
         if (isFrom) {
             setFromLanguage(la);
+            setInputTexts("");
         } else {
             setToLanguage(la);
         }
