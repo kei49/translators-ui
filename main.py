@@ -7,7 +7,6 @@ import copy
 from python.translators import Translators, ModelType
 
 
-
 app = FastAPI()
 
 origins = [
@@ -32,6 +31,7 @@ class TranslateConfig(BaseModel):
 
 
 opus_mt_ko_en_model = Translators(ModelType.OPUS_MT_KO_EN)
+opus_mt_mul_en_model = Translators(ModelType.OPUS_MT_MUL_EN)
 mbart_large_mm_model = Translators(ModelType.MBART_LARGE_MANY_TO_MANY)
 
 
@@ -44,13 +44,16 @@ def health_check():
 @app.post("/translate/")
 def translate(t_conf: TranslateConfig):
     print(f"{os.getpid()} worker is handling the request")
-    
+
     if t_conf.from_la == "ko" and t_conf.to_la == "en":
         translator = copy.deepcopy(opus_mt_ko_en_model)
+    elif t_conf.to_la == "en":
+        translator = copy.deepcopy(opus_mt_mul_en_model)
+        translator.set_languages(t_conf.from_la, t_conf.to_la)
     else:
         translator = copy.deepcopy(mbart_large_mm_model)
         translator.set_languages(t_conf.from_la, t_conf.to_la)
-    
+
     outputs = translator.inference(t_conf.texts)
     return outputs
 

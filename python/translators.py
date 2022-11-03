@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 from python.models.opus_mt_ko_en import OpusMtKoEn
+from python.models.opus_mt_mul_en import OpusMtMulEn 
 from python.models.mbert_large_50 import MBartLargeManyToMany
 # from python.models.mbert_large_cc25 import MbertLargeCC25
 import torch
 
 class ModelType(Enum):
     OPUS_MT_KO_EN = auto()
+    OPUS_MT_MUL_EN = auto()
     MBART_LARGE_MANY_TO_MANY = auto()
 
 
@@ -27,6 +29,8 @@ class Translators():
                 self.model = OpusMtKoEn()
             case ModelType.MBART_LARGE_MANY_TO_MANY:
                 self.model = MBartLargeManyToMany(use_gpu=self.use_gpu)
+            case ModelType.OPUS_MT_MUL_EN:
+                self.model = OpusMtMulEn()
             case _:
                 pass
 
@@ -36,6 +40,8 @@ class Translators():
                 case ModelType.OPUS_MT_KO_EN:
                     pass
                 case ModelType.MBART_LARGE_MANY_TO_MANY:
+                    self.model.set_languages(from_la, to_la)
+                case ModelType.OPUS_MT_MUL_EN:
                     self.model.set_languages(from_la, to_la)
                 case _:
                     pass
