@@ -60,7 +60,7 @@ function MainPage() {
                 <Icon as={TbSwitchHorizontal} pt="8px" w={{ base: "10%", md: "5%",xl: "5%" }} h={8} color="white" onClick={switchLanguages} />
                 <VStack w="100%" mr="50px">
                     <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, false)} />
-                    <Textarea value={outputTexts} readOnly h="200px" placeholder='Translated texts will be displayed here' color="white" />
+                    <Textarea value={outputTexts} readOnly h="400px" placeholder='Translated texts will be displayed here' color="white" />
                 </VStack>
             </Box>
         </Box>

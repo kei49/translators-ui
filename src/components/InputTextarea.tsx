@@ -50,7 +50,7 @@ function InputTextarea({ texts, handleUpdate }: IInputTextarea) {
         <Box w="100%">
             <form onSubmit={formik.handleSubmit}>
                 <FormikProvider value={formik}>
-                    <Field h="200px" as={Textarea} placeholder='Enter texts to translate from' name="texts" color="white" />
+                    <Field h="400px" as={Textarea} placeholder='Enter texts to translate from' name="texts" color="white" />
                     <AutoSubmit />
                 </FormikProvider>
             </form>
