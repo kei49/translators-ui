@@ -27,18 +27,27 @@ function MainPage() {
     const switchLanguages = () => {
         setFromLanguage(toLanguage);
         setToLanguage(fromLanguage);
-        setInputTexts(outputTexts);
+        
+        const nextInputTexts = outputTexts.slice()
+        const nextOutputTexts = inputTexts.slice()
+
+        setInputTexts(nextInputTexts);
+        setOutputTexts(nextOutputTexts);
     }
 
     const handleOneLanugageUpdate = (la: string, isFrom: boolean) => {
-        if (isFrom) {
-            la && setFromLanguage(la);
-            setInputTexts("");
-        } else {
-            la && setToLanguage(la);
+        if ((isFrom && la === toLanguage) || (!isFrom && la === fromLanguage)) {
+            switchLanguages();
+        } else{
+            if (isFrom) {
+                la && setFromLanguage(la);
+                setInputTexts("");
+            } else {
+                la && setToLanguage(la);
+            }
+            
+            setOutputTexts("");
         }
-        
-        setOutputTexts("");
     }
 
     return (

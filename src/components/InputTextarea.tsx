@@ -34,10 +34,9 @@ function InputTextarea({ texts, handleUpdate }: IInputTextarea) {
             <form>
                 <Controller
                     control={control}
-                    defaultValue={texts}
                     name="texts"
                     render={({ field: { onChange }}) => (
-                        <Textarea h="400px" placeholder='Enter texts to translate from' color="white" onChange={onChange}/>
+                        <Textarea h="400px" placeholder='Enter texts to translate from' color="white" onChange={onChange} value={texts}/>
                     )}
                 />
             </form>
