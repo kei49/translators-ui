@@ -1,57 +1,43 @@
 import React, { useEffect } from 'react';
-// import { useFormik } from 'formik';
-import { Field, FormikProvider, useFormikContext, FormikContextType, useFormik } from 'formik';
-import { Box, Select } from '@chakra-ui/react'
+import { useForm, Controller } from 'react-hook-form';
+import Select from 'react-select';
+import { Box } from '@chakra-ui/react'
+
+import { availableLanguageOptions, getOptionByCode } from '../common/constants';
 
 
 interface ILanguageSelector {
-    languages: string[];
     value: string;
-    handleUpdate: (language: string) => void;
+    handleUpdate: (code: string) => void;
 }
 
-interface FormikInput {
-    language: string;
-}
 
-function LanguageSelector({ languages, value, handleUpdate }: ILanguageSelector) {
-    const formik = useFormik({
-        initialValues: { language: value },
-        onSubmit: (values) => {
-            handleUpdate(values.language);
-        },
-        enableReinitialize: true
-    })
-
-    const AutoSubmit = () => {
-        const { values, submitForm }: FormikContextType<FormikInput> = useFormikContext();
-        React.useEffect(() => {
-            if (values.language !== value) {
-                submitForm();
-            }
-        }, [values, submitForm]);
-        return <></>;
-    }
+function LanguageSelector({ value, handleUpdate }: ILanguageSelector) {
+    const { handleSubmit, control, watch } = useForm();
+    const watchLanguage = watch("language");
+    const options = availableLanguageOptions;
 
     useEffect(() => {
-        console.log("@@@@ updating", value);
-        formik.setValues({ language: value });
+        handleUpdate(watchLanguage?.value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value])
+    }, [watchLanguage])
 
     return (
         <Box w="100%">
-            
-                <FormikProvider value={formik}>
-                <form onSubmit={formik.handleSubmit}>
-                    <Field as={Select} value={value} placeholder='Select language' name="language" color="white">
-                        {languages.map(la => (
-                            <option key={la} value={la} color="white">{la}</option>
-                        ))}
-                    </Field>
-                    <AutoSubmit />
+            <form onSubmit={handleSubmit(data => console.log(data))}>
+                <Controller
+                    control={control}
+                    defaultValue={options[0]}
+                    name="language"
+                    render={({ field: { onChange }}) => (
+                        <Select
+                            defaultValue={getOptionByCode(value)}
+                            onChange={onChange}
+                            options={options}
+                        />
+                    )}
+                />
             </form>
-                </FormikProvider>
         </Box>
             
     )

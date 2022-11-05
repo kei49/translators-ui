@@ -3,7 +3,7 @@ import { Textarea, Icon } from '@chakra-ui/react'
 import { Box, VStack } from '@chakra-ui/react'
 
 import { TbSwitchHorizontal } from "react-icons/tb";
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 
 import LanguageSelector from '../components/LanguageSelector';
 import InputTextarea from '../components/InputTextarea';
@@ -15,10 +15,6 @@ function MainPage() {
     const [inputTexts, setInputTexts] = useState<string>("");
     const [outputTexts, setOutputTexts] = useState<string>("");
 
-    const availableLanguages = ["en", "es", "fr", "it", "ja", "ko", "ru", "vi", "zh", "id", "pl", "th"]
-    const availableFromLanguages = availableLanguages;
-    const availableTolanguages = availableLanguages;
-
     useTranslate({
         params: {
             texts: inputTexts,
@@ -28,15 +24,15 @@ function MainPage() {
         returnResults: (texts: string) => setOutputTexts(texts)
     });
 
-    const switchLanguages = () => {
-        if ((availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage))) {
-            setFromLanguage(toLanguage);
-            // setToLanguage(fromLanguage);
-            setInputTexts(outputTexts);
-        } else {
-            toast.warning("Sorry, the pair of the selected languages are not available");
-        }
-    }
+    // const switchLanguages = () => {
+    //     if ((availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage))) {
+    //         setFromLanguage(toLanguage);
+    //         // setToLanguage(fromLanguage);
+    //         setInputTexts(outputTexts);
+    //     } else {
+    //         toast.warning("Sorry, the pair of the selected languages are not available");
+    //     }
+    // }
 
     const handleOneLanugageUpdate = (la: string, isFrom: boolean) => {
         console.log("@@@@ calling udpates", la, isFrom);
@@ -54,12 +50,12 @@ function MainPage() {
         <Box pt="20px" margin="auto" minHeight="1000px" bgColor="#282c34">
             <Box display="flex">
                 <VStack w="100%" ml="50px">
-                    <LanguageSelector languages={availableFromLanguages} value={fromLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, true)} />
+                    <LanguageSelector value={fromLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, true)} />
                     <InputTextarea texts={inputTexts} handleUpdate={(texts) => setInputTexts(texts)} />
                 </VStack>
-                <Icon as={TbSwitchHorizontal} pt="8px" w={{ base: "10%", md: "5%",xl: "5%" }} h={8} color="white" onClick={switchLanguages} />
+                <Icon as={TbSwitchHorizontal} pt="8px" w={{ base: "10%", md: "5%",xl: "5%" }} h={8} color="white" />
                 <VStack w="100%" mr="50px">
-                    <LanguageSelector languages={availableTolanguages} value={toLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, false)} />
+                    <LanguageSelector value={toLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, false)} />
                     <Textarea value={outputTexts} readOnly h="400px" placeholder='Translated texts will be displayed here' color="white" />
                 </VStack>
             </Box>
