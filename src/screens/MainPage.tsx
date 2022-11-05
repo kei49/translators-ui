@@ -24,23 +24,18 @@ function MainPage() {
         returnResults: (texts: string) => setOutputTexts(texts)
     });
 
-    // const switchLanguages = () => {
-    //     if ((availableFromLanguages.includes(toLanguage) && availableTolanguages.includes(fromLanguage))) {
-    //         setFromLanguage(toLanguage);
-    //         // setToLanguage(fromLanguage);
-    //         setInputTexts(outputTexts);
-    //     } else {
-    //         toast.warning("Sorry, the pair of the selected languages are not available");
-    //     }
-    // }
+    const switchLanguages = () => {
+        setFromLanguage(toLanguage);
+        setToLanguage(fromLanguage);
+        setInputTexts(outputTexts);
+    }
 
     const handleOneLanugageUpdate = (la: string, isFrom: boolean) => {
-        console.log("@@@@ calling udpates", la, isFrom);
         if (isFrom) {
-            setFromLanguage(la);
+            la && setFromLanguage(la);
             setInputTexts("");
         } else {
-            setToLanguage(la);
+            la && setToLanguage(la);
         }
         
         setOutputTexts("");
@@ -53,7 +48,7 @@ function MainPage() {
                     <LanguageSelector value={fromLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, true)} />
                     <InputTextarea texts={inputTexts} handleUpdate={(texts) => setInputTexts(texts)} />
                 </VStack>
-                <Icon as={TbSwitchHorizontal} pt="8px" w={{ base: "10%", md: "5%",xl: "5%" }} h={8} color="white" />
+                <Icon as={TbSwitchHorizontal} pt="8px" w={{ base: "10%", md: "5%",xl: "5%" }} h={8} color="white" onClick={() => switchLanguages()} _hover={{ cursor: "pointer" }} />
                 <VStack w="100%" mr="50px">
                     <LanguageSelector value={toLanguage} handleUpdate={(la) => handleOneLanugageUpdate(la, false)} />
                     <Textarea value={outputTexts} readOnly h="400px" placeholder='Translated texts will be displayed here' color="white" />

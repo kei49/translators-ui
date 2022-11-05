@@ -13,12 +13,19 @@ interface ILanguageSelector {
 
 
 function LanguageSelector({ value, handleUpdate }: ILanguageSelector) {
-    const { handleSubmit, control, watch } = useForm();
+    const { handleSubmit, control, watch, setValue } = useForm();
     const watchLanguage = watch("language");
     const options = availableLanguageOptions;
 
     useEffect(() => {
-        handleUpdate(watchLanguage?.value);
+        setValue("language", getOptionByCode(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
+
+    useEffect(() => {
+        if (watchLanguage && watchLanguage.value && watchLanguage.value !== value) {
+            handleUpdate(watchLanguage.value);
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watchLanguage])
 
@@ -27,11 +34,12 @@ function LanguageSelector({ value, handleUpdate }: ILanguageSelector) {
             <form onSubmit={handleSubmit(data => console.log(data))}>
                 <Controller
                     control={control}
-                    defaultValue={options[0]}
                     name="language"
-                    render={({ field: { onChange }}) => (
+                    render={({ field: { onChange, ref}}) => (
                         <Select
-                            defaultValue={getOptionByCode(value)}
+                            ref={ref}
+                            // defaultValue={}
+                            value={getOptionByCode(value)}
                             onChange={onChange}
                             options={options}
                         />
