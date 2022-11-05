@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { Box, Textarea } from '@chakra-ui/react'
-import { useForm, Controller } from 'react-hook-form';
+import React, { useEffect, useRef, useState } from 'react';
+import { Textarea } from '@chakra-ui/react'
 
 
 interface IInputTextarea {
@@ -11,37 +10,39 @@ interface IInputTextarea {
 let tid: NodeJS.Timeout | null = null;
 
 function InputTextarea({ texts, handleUpdate }: IInputTextarea) {
-    const { watch, control } = useForm();
-    const watchTexts = watch("texts");
+    const latestTextsRef = useRef<string>(texts);
+    const [inputValue, setInputValue] = useState<string>(texts);
 
-    useEffect(() => {
-        if (watchTexts && watchTexts !== "") {
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = e.target.value
+        setInputValue(value);
+
+        if (value && value !== "") {
             if (tid !== null) clearTimeout(tid);
 
             tid = setTimeout(() => {
-                if (watchTexts) {
-                    console.log("@@@@ handle updated with", watchTexts);
-                    handleUpdate(watchTexts)
+                if (value) {
+                    console.log("@@@@ handle updated with", value);
+
+                    latestTextsRef.current = value;
+                    handleUpdate(value)
                     if (tid !== null) clearTimeout(tid);
                 }
-            }, 300);
+            }, 1000);
+        }
+    }
+
+    useEffect(() => {
+        if (latestTextsRef.current !== texts) {
+            latestTextsRef.current = texts;
+
+            setInputValue(texts);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [watchTexts])
+    }, [texts])
 
     return (
-        <Box w="100%">
-            <form>
-                <Controller
-                    control={control}
-                    name="texts"
-                    render={({ field: { onChange }}) => (
-                        <Textarea h="400px" placeholder='Enter texts to translate from' color="white" onChange={onChange} value={texts}/>
-                    )}
-                />
-            </form>
-        </Box>
-            
+        <Textarea h="400px" placeholder='Enter texts to translate from' color="white" onChange={handleInputChange} value={inputValue}/>
     )
 }
 

@@ -27,12 +27,9 @@ function MainPage() {
     const switchLanguages = () => {
         setFromLanguage(toLanguage);
         setToLanguage(fromLanguage);
-        
-        const nextInputTexts = outputTexts.slice()
-        const nextOutputTexts = inputTexts.slice()
 
-        setInputTexts(nextInputTexts);
-        setOutputTexts(nextOutputTexts);
+        setInputTexts(outputTexts);
+        setOutputTexts('');
     }
 
     const handleOneLanugageUpdate = (la: string, isFrom: boolean) => {
