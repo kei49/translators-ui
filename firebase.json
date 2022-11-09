@@ -5,6 +5,14 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "/static/**/*.js",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=86400" }
+        ]
+      }
     ]
   }
 }
