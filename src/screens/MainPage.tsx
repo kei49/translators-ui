@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Textarea, Icon } from '@chakra-ui/react'
-import { Box, VStack } from '@chakra-ui/react'
+import { Textarea, Icon, Box, VStack } from '@chakra-ui/react'
 
 import { TbSwitchHorizontal } from "react-icons/tb";
 // import { toast } from 'react-toastify';
@@ -8,12 +7,14 @@ import { TbSwitchHorizontal } from "react-icons/tb";
 import LanguageSelector from '../components/LanguageSelector';
 import InputTextarea from '../components/InputTextarea';
 import { useTranslate } from '../hooks/useTranslate';
+import SwitchTranslateType from '../components/SwitchTranslateType';
 
 function MainPage() {
     const [fromLanguage, setFromLanguage] = useState<string>("en");
     const [toLanguage, setToLanguage] = useState<string>("ko");
     const [inputTexts, setInputTexts] = useState<string>("");
     const [outputTexts, setOutputTexts] = useState<string>("");
+    const [doTranslateAll, setDoTranslateAll] = useState<boolean>(false);
 
     useTranslate({
         params: {
@@ -21,7 +22,8 @@ function MainPage() {
             fromLanguage,
             toLanguage
         },
-        returnResults: (texts: string) => setOutputTexts(texts)
+        returnResults: (texts: string) => setOutputTexts(texts),
+        doTranslateAll
     });
 
     const switchLanguages = () => {
@@ -60,6 +62,7 @@ function MainPage() {
                     <Textarea value={outputTexts} readOnly h="400px" placeholder='Translated texts will be displayed here' color="white" />
                 </VStack>
             </Box>
+            <SwitchTranslateType handleUpdate={setDoTranslateAll} />
         </Box>
     )
 }

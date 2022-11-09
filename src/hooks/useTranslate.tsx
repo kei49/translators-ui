@@ -16,12 +16,18 @@ interface TranslateStatus extends TranslateParams {
 interface IUseTranslate {
     params: TranslateParams;
     returnResults: (texts: string) => void;
+    doTranslateAll: boolean
 }
 
 
-export const useTranslate = ({ params, returnResults }: IUseTranslate) => {
+export const useTranslate = ({ params, returnResults, doTranslateAll }: IUseTranslate) => {
     const runningRef = useRef<boolean>(false);
     const nextCallParamsRef = useRef<TranslateStatus>({} as TranslateStatus)
+    const doTranslateAllRef = useRef<boolean>(false);
+
+    useEffect(() => {
+        doTranslateAllRef.current = doTranslateAll;
+    }, [doTranslateAll])
 
     useEffect(() => {
         if (!_.isEqual(_.omit(nextCallParamsRef.current, 'done'), params)) {
@@ -41,7 +47,7 @@ export const useTranslate = ({ params, returnResults }: IUseTranslate) => {
                 console.log(`@@@@@ starting to call translate API with ${texts}, ${fromLanguage}, ${toLanguage}, ${done}`);
                 runningRef.current = true;
 
-                const results = await translate(texts, fromLanguage, toLanguage);
+                const results = await translate(texts, fromLanguage, toLanguage, doTranslateAllRef.current);
                 console.log("get results form API: ", results);
                 returnResults(results);
                 
